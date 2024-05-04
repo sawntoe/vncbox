@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "admin:${ADMIN_PASSWORD}" | chpasswd
+echo "user:${USER_PASSWORD}" | chpasswd
+
+su user <<EOF
+touch ~/.vnc/passwd
+echo "${NOVNC_PASSWORD}" | vncpasswd -f > ~/.vnc/passwd
+chmod 600 ~/.vnc/passwd
+vncserver :1 -geometry 1280x800 -depth 24;
+gotty -c "user:${GOTTY_PASSWORD}" -p 7654 -w /bin/bash &
+easy-novnc -p 5901
+EOF
